@@ -23,5 +23,6 @@ pip install virtualenvwrapper
 grep -q -F "${VENV_BLOCK}" ~/.bashrc || echo "${VENV_BLOCK}" >> ~/.bashrc
 source ~/.bashrc
 mkvirtualenv ${VENV_NAME}
+export PATH=$PATH:/opt/terraform
 pip install -r requirements.txt
 fab init:${USERNAME},${ENVIRONMENT}

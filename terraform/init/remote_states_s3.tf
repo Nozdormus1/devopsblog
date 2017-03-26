@@ -1,6 +1,10 @@
-variable "main_bucket_name" {}
+# FRAMEWORK BLOCK, PLEASE DON'T DELETE
+variable "username" {}
 variable "environment" {}
 variable "region" {}
+######################################
+
+variable "main_bucket_name" {}
 
 terraform {
   backend "s3" {}
