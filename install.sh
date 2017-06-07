@@ -11,10 +11,10 @@ VENV_NAME=$3
 WORKON_HOME=$HOME/.virtualenvs
 VENV_BLOCK="export WORKON_HOME=\$HOME/.virtualenvs
 source /usr/local/bin/virtualenvwrapper.sh
-alias devops='workon devops'"
+alias $VENV_NAME='workon $VENV_NAME'"
 
-apt-get update
-apt-get install -y python-dev python-pip unzip
+sudo apt-get update
+sudo apt-get install -y python-dev python-pip unzip
 
 
 pip install virtualenv
