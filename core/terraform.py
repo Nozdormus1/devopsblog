@@ -69,6 +69,7 @@ def apply_tf(username, environment, profile):
     print tf_vars
     with lcd(variables.cwd + '/terraform/{}'.format(profile)):
         local('/opt/terraform/terraform apply ' \
+            + '-var \'aws_profile={}\' '.format(variables.aws_profile) \
             + '-var \'username={}\' '.format(username) \
             + '-var \'environment={}\' '.format(environment) \
             + '-var \'region={}\' '.format(variables.region) \
