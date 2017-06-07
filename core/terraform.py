@@ -57,6 +57,7 @@ def init_terraform_backend(username, environment, profile):
 @task
 def create_profile():
     #TODO
+    print 'TODO'
 
 
 @task

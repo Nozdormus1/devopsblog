@@ -25,3 +25,4 @@ def configure_aws_credentials():
 @task
 def change_env():
     #TODO
+    print 'TODO'
