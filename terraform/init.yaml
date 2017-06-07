@@ -1,0 +1,4 @@
+---
+# yaml variables for profile
+global:
+  main_bucket_name: devopsblog-remote-states-tf

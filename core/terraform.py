@@ -63,9 +63,13 @@ def create_profile():
 @task
 def apply_tf(username, environment, profile):
     #TODO
+    tf_vars=""
+    for key, value in yaml.load(open(variables.cwd + '/terraform/{}.yaml'.format(profile)))['global'].iteritems():
+        tf_vars+='-var \'{}={}\' '.format(key, value)
+    print tf_vars
     with lcd(variables.cwd + '/terraform/{}'.format(profile)):
         local('/opt/terraform/terraform apply ' \
-            + '-var \'main_bucket_name={}-devopsblog-remote-states-tf\' '.format(username) \
             + '-var \'username={}\' '.format(username) \
             + '-var \'environment={}\' '.format(environment) \
-            + '-var \'region={}\' '.format(variables.region))
+            + '-var \'region={}\' '.format(variables.region) \
+            + tf_vars)
