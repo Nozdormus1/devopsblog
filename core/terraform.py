@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 
 import variables
+import helpers
 
 import os
 import yaml
@@ -46,7 +47,7 @@ def init_terraform_profiles(username, environment):
 def init_terraform_backend(username, environment, profile):
     keypath = '{}_{}/{}/terraform.tfstate'.format(username, environment, profile)
 
-    with lcd(variables.cwd + '/terraform/{}'.format(profile)):
+    with lcd(variables.cwd + '/terraform/profiles/{}'.format(profile)):
         local('/opt/terraform/terraform init ' \
             + '-backend-config \'region={}\' '.format(variables.region) \
             + '-backend-config \'bucket={}\' '.format(variables.states_bucket) \
@@ -61,30 +62,32 @@ def create_profile():
 
 
 @task
-def apply_tf(username, environment, profile):
-    #TODO
-    tf_vars=""
-    for key, value in yaml.load(open(variables.cwd + '/terraform/{}.yaml'.format(profile)))['global'].iteritems():
-        tf_vars+='-var \'{}={}\' '.format(key, value)
-    print tf_vars
-    with lcd(variables.cwd + '/terraform/{}'.format(profile)):
-        local('/opt/terraform/terraform apply ' \
+def update_terraform(username, environment):
+    install_terraform()
+    init_terraform_profiles(username, environment)
+
+
+def apply_destroy_tf(username, environment, profile, action):
+    tf_vars='{}'.format(helpers.terraform_configs_yaml_array(profile, 'global'))
+    tf_keys=''
+    if os.path.isfile(variables.cwd + '/terraform/configs/keys.yaml'):
+        tf_keys='{}'.format(helpers.terraform_configs_yaml_array('keys', 'keys'))
+    with lcd(variables.cwd + '/terraform/profiles/{}'.format(profile)):
+        local('/opt/terraform/terraform {} '.format(action) \
             + '-var \'aws_profile={}\' '.format(variables.aws_profile) \
             + '-var \'username={}\' '.format(username) \
             + '-var \'environment={}\' '.format(environment) \
             + '-var \'region={}\' '.format(variables.region) \
-            + tf_vars)
+            + tf_vars \
+            + tf_keys)
+
+
+@task
+def apply_tf(username, environment, profile):
+    #TODO
+    apply_destroy_tf(username, environment, profile, 'apply')
 
 
 @task
 def destroy_tf(username, environment, profile):
-    tf_vars=""
-    for key, value in yaml.load(open(variables.cwd + '/terraform/{}.yaml'.format(profile)))['global'].iteritems():
-        tf_vars+='-var \'{}={}\' '.format(key, value)
-    with lcd(variables.cwd + '/terraform/{}'.format(profile)):
-        local('/opt/terraform/terraform destroy ' \
-            + '-var \'aws_profile={}\' '.format(variables.aws_profile) \
-            + '-var \'username={}\' '.format(username) \
-            + '-var \'environment={}\' '.format(environment) \
-            + '-var \'region={}\' '.format(variables.region) \
-            + tf_vars)
+    apply_destroy_tf(username, environment, profile, 'destroy')
