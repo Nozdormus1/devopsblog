@@ -74,3 +74,17 @@ def apply_tf(username, environment, profile):
             + '-var \'environment={}\' '.format(environment) \
             + '-var \'region={}\' '.format(variables.region) \
             + tf_vars)
+
+
+@task
+def destroy_tf(username, environment, profile):
+    tf_vars=""
+    for key, value in yaml.load(open(variables.cwd + '/terraform/{}.yaml'.format(profile)))['global'].iteritems():
+        tf_vars+='-var \'{}={}\' '.format(key, value)
+    with lcd(variables.cwd + '/terraform/{}'.format(profile)):
+        local('/opt/terraform/terraform destroy ' \
+            + '-var \'aws_profile={}\' '.format(variables.aws_profile) \
+            + '-var \'username={}\' '.format(username) \
+            + '-var \'environment={}\' '.format(environment) \
+            + '-var \'region={}\' '.format(variables.region) \
+            + tf_vars)

@@ -10,7 +10,8 @@ from terraform import (
     init_terraform_profiles,
     init_terraform_backend,
     create_profile,
-    apply_tf
+    apply_tf,
+    destroy_tf
 )
 
 __all__ = [
@@ -21,5 +22,6 @@ __all__ = [
     'init_terraform_profiles',
     'init_terraform_backend',
     'create_profile',
-    'apply_tf'
+    'apply_tf',
+    'destroy_tf'
 ]
