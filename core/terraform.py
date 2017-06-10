@@ -43,7 +43,6 @@ def init_terraform_profiles(username, environment):
             init_terraform_backend(username, environment, profile)
 
 
-@task
 def init_terraform_backend(username, environment, profile):
     keypath = '{}_{}/{}/terraform.tfstate'.format(username, environment, profile)
 
@@ -55,7 +54,6 @@ def init_terraform_backend(username, environment, profile):
             + '-backend-config \'profile={}\''.format(variables.aws_profile))
 
 
-@task
 def create_profile():
     #TODO
     print 'TODO'

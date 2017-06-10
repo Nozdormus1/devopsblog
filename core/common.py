@@ -22,7 +22,6 @@ def configure_aws_credentials():
     local('echo \"' + credentials + '\" > ~/.aws/credentials')
 
 
-@task
 def change_env():
     #TODO
     print 'TODO'
