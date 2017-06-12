@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 
 import variables
+import terraform
 
 import os
 import yaml
@@ -22,6 +23,14 @@ def configure_aws_credentials():
     local('echo \"' + credentials + '\" > ~/.aws/credentials')
 
 
-def change_env():
-    #TODO
-    print 'TODO'
+@task
+def change_env(username, environment):
+    try:
+        file = open('.environment', 'r')
+    except IOError:
+        file = open('.environment', 'w')
+    file.close()
+    file = open('.environment', 'w')
+    file.write(environment)
+    file.close()
+    terraform.init_terraform_profiles(username)

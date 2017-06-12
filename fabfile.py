@@ -22,7 +22,7 @@ def init(username, environment):
     core.install_terraform()
     core.configure_aws_credentials()
     core.init_bucket()
-    core.init_terraform_profiles(username, environment)
+    core.change_env(username, environment)
 
 
 #@task

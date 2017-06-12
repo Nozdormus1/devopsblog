@@ -6,6 +6,7 @@ import helpers
 import os
 import yaml
 import boto3
+import sys
 
 from fabric.api import abort, task, puts, roles, local, env, lcd
 from fabric import state
@@ -35,16 +36,16 @@ def init_bucket():
 
 
 @task
-def init_terraform_profiles(username, environment):
+def init_terraform_profiles(username):
     if not variables.profiles:
         print('No profiles were found, nothing to initialize')
     else:
         for profile in variables.profiles:
-            init_terraform_backend(username, environment, profile)
+            init_terraform_backend(username, variables.environment(), profile)
 
 
 def init_terraform_backend(username, environment, profile):
-    keypath = '{}_{}/{}/terraform.tfstate'.format(username, environment, profile)
+    keypath = '{}_{}/{}/terraform.tfstate'.format(username, variables.environment(), profile)
 
     with lcd(variables.cwd + '/terraform/profiles/{}'.format(profile)):
         local('/opt/terraform/terraform init ' \
@@ -60,12 +61,16 @@ def create_profile():
 
 
 @task
-def update_terraform(username, environment):
+def update_terraform(username):
     install_terraform()
-    init_terraform_profiles(username, environment)
+    init_terraform_profiles(username, variables.environment())
 
 
 def apply_destroy_tf(username, environment, profile, action):
+    sys.stdout.write('Please, confirm using your environment \'' + environment + '\' by typing it into prompt: ')
+    choice = raw_input()
+    if choice != environment:
+        exit("\033[0;31m[ERROR] Invalid environment: '%s'\033[0m" % choice)
     tf_vars='{}'.format(helpers.terraform_configs_yaml_list(profile))
     print tf_vars
     tf_credentials=''
@@ -82,11 +87,10 @@ def apply_destroy_tf(username, environment, profile, action):
 
 
 @task
-def apply_tf(username, environment, profile):
-    #TODO
-    apply_destroy_tf(username, environment, profile, 'apply')
+def apply_tf(username, profile):
+    apply_destroy_tf(username, variables.environment(), profile, 'apply')
 
 
 @task
-def destroy_tf(username, environment, profile):
-    apply_destroy_tf(username, environment, profile, 'destroy')
+def destroy_tf(username, profile):
+    apply_destroy_tf(username, variables.environment(), profile, 'destroy')

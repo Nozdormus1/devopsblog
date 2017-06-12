@@ -12,3 +12,7 @@ profiles = globals_yaml['profiles']
 states_bucket = globals_yaml['states_bucket']
 terraform_url = globals_yaml['terraform_url']
 cwd = os.getcwd()
+
+def environment():
+    with open('.environment', 'r') as env_file:
+        return env_file.read()
