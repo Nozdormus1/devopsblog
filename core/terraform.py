@@ -13,7 +13,6 @@ from fabric import state
 from fabric.task_utils import crawl
 
 
-@task
 def install_terraform():
     local("wget -O /tmp/terraform.zip " + variables.terraform_url)
     local("sudo unzip -o /tmp/terraform.zip -d /opt/terraform")
@@ -23,7 +22,6 @@ def install_terraform():
             f.write(value + '\n')
 
 
-@task
 def init_bucket():
     session = boto3.Session(profile_name=variables.aws_profile)
     s3 = session.resource('s3')
@@ -37,15 +35,17 @@ def init_bucket():
 
 @task
 def init_terraform_profiles(username):
+    init_bucket()
+    environment=variables.environment()
     if not variables.profiles:
         print('No profiles were found, nothing to initialize')
     else:
         for profile in variables.profiles:
-            init_terraform_backend(username, variables.environment(), profile)
+            init_terraform_backend(username, environment, profile)
 
 
 def init_terraform_backend(username, environment, profile):
-    keypath = '{}_{}/{}/terraform.tfstate'.format(username, variables.environment(), profile)
+    keypath = '{}_{}/{}/terraform.tfstate'.format(username, environment, profile)
 
     with lcd(variables.cwd + '/terraform/profiles/{}'.format(profile)):
         local('/opt/terraform/terraform init ' \
@@ -63,7 +63,7 @@ def create_profile():
 @task
 def update_terraform(username):
     install_terraform()
-    init_terraform_profiles(username, variables.environment())
+    init_terraform_profiles(username)
 
 
 def apply_destroy_tf(username, environment, profile, action):

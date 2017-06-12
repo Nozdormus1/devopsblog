@@ -21,7 +21,6 @@ from fabric.task_utils import crawl
 def init(username, environment):
     core.install_terraform()
     core.configure_aws_credentials()
-    core.init_bucket()
     core.change_env(username, environment)
 
 

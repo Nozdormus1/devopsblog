@@ -6,9 +6,7 @@ from common import (
 )
 from terraform import (
     install_terraform,
-    init_bucket,
     init_terraform_profiles,
-    init_terraform_backend,
     create_profile,
     update_terraform,
     apply_tf,
@@ -19,9 +17,7 @@ __all__ = [
     'configure_aws_credentials',
     'change_env',
     'install_terraform',
-    'init_bucket',
     'init_terraform_profiles',
-    'init_terraform_backend',
     'create_profile',
     'update_terraform',
     'apply_tf',
