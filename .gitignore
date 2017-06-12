@@ -1,5 +1,5 @@
 *.py[cod]
 *.tfstate
 .terraform
-keys.yaml
+credentials.yaml
 *.tfstate.backup

@@ -66,10 +66,11 @@ def update_terraform(username, environment):
 
 
 def apply_destroy_tf(username, environment, profile, action):
-    tf_vars='{}'.format(helpers.terraform_configs_yaml_array(profile, 'global'))
-    tf_keys=''
-    if os.path.isfile(variables.cwd + '/terraform/configs/keys.yaml'):
-        tf_keys='{}'.format(helpers.terraform_configs_yaml_array('keys', 'keys'))
+    tf_vars='{}'.format(helpers.terraform_configs_yaml_list(profile))
+    print tf_vars
+    tf_credentials=''
+    if os.path.isfile(variables.cwd + '/terraform/configs/credentials.yaml'):
+        tf_credentials='{}'.format(helpers.terraform_configs_yaml_list('credentials'))
     with lcd(variables.cwd + '/terraform/profiles/{}'.format(profile)):
         local('/opt/terraform/terraform {} '.format(action) \
             + '-var \'aws_profile={}\' '.format(variables.aws_profile) \
@@ -77,7 +78,7 @@ def apply_destroy_tf(username, environment, profile, action):
             + '-var \'environment={}\' '.format(environment) \
             + '-var \'region={}\' '.format(variables.region) \
             + tf_vars \
-            + tf_keys)
+            + tf_credentials)
 
 
 @task
