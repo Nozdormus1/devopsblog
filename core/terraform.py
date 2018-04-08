@@ -12,6 +12,8 @@ from fabric.api import abort, task, puts, roles, local, env, lcd
 from fabric import state
 from fabric.task_utils import crawl
 
+from botocore.client import ClientError
+
 
 def install_terraform():
     local("wget -O /tmp/terraform.zip " + variables.terraform_url)
@@ -25,7 +27,9 @@ def install_terraform():
 def init_bucket():
     session = boto3.Session(profile_name=variables.aws_profile)
     s3 = session.resource('s3')
-    if s3.Bucket(variables.states_bucket) in s3.buckets.all() is False:
+    try:
+        s3.meta.client.head_bucket(Bucket=variables.states_bucket)
+    except ClientError:
         bucket = s3.create_bucket(
             Bucket=variables.states_bucket,
             CreateBucketConfiguration={

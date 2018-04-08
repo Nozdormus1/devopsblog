@@ -20,6 +20,7 @@ from fabric.task_utils import crawl
 @task
 def init(username, environment):
     core.install_terraform()
+    core.install_packer()
     core.configure_aws_credentials()
     core.change_env(username, environment)
 
